@@ -1,0 +1,2 @@
+rootProject.name='CAt Tutorial'
+include ':app'
