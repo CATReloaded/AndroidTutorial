@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">CAt Tutorial</string>
+    <string name="name">name</string>
+    <string name="number">Number</string>
 </resources>
