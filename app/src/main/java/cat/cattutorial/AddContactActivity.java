@@ -19,6 +19,11 @@ public class AddContactActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event);
         initView();
+        if (getIntent().hasExtra("contact")) {
+            Contact contact = (Contact) getIntent().getSerializableExtra("contact");
+            etName.setText(contact.getName());
+            etNumber.setText(contact.getNumber());
+        }
     }
 
     void initView() {
@@ -33,6 +38,7 @@ public class AddContactActivity extends AppCompatActivity {
                 if (contact != null) {
                     Intent intent = new Intent();
                     intent.putExtra("contact", contact);
+                    intent.putExtra("pos",getIntent().getIntExtra("pos",0));
                     setResult(Activity.RESULT_OK, intent);
                     finish();
                 }

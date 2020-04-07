@@ -18,8 +18,20 @@ public class HomeActivity extends AppCompatActivity {
 
     RecyclerView rv;
     final int ADD_REQUEST_CODE = 1;
+    final int EDIT_REQUEST_CODE = 2;
     ArrayList<Contact> contactList = new ArrayList<>();
-    ContactAdapterNew adapter = new ContactAdapterNew();
+
+    ContactAdapterNew.OnContactClicked o = new ContactAdapterNew.OnContactClicked() {
+        @Override
+        public void c(Contact contact, int position) {
+            Intent intent = new Intent(HomeActivity.this, AddContactActivity.class);
+            intent.putExtra("contact", contact);
+            intent.putExtra("pos", position);
+            startActivityForResult(intent, EDIT_REQUEST_CODE);
+        }
+    };
+
+    ContactAdapterNew adapter = new ContactAdapterNew(o);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +45,8 @@ public class HomeActivity extends AppCompatActivity {
     void initViews() {
         rv = findViewById(R.id.rv);
         rv.setAdapter(adapter);
+
+
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,6 +62,9 @@ public class HomeActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ADD_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             contactList.add((Contact) data.getSerializableExtra("contact"));
+            adapter.notifyDataSetChanged();
+        } else if (requestCode == EDIT_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            contactList.set(data.getIntExtra("pos", 0), (Contact) data.getSerializableExtra("contact"));
             adapter.notifyDataSetChanged();
         }
     }

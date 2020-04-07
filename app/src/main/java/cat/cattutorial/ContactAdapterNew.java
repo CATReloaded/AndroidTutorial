@@ -12,7 +12,16 @@ import java.util.ArrayList;
 
 public class ContactAdapterNew extends RecyclerView.Adapter<ContactAdapterNew.ContactViewHolder> {
 
+    public ContactAdapterNew(OnContactClicked onItemClickedListener) {
+        this.onItemClickedListener = onItemClickedListener;
+    }
+
+    private OnContactClicked onItemClickedListener;
     public ArrayList<Contact> contacts = new ArrayList<>();
+
+    interface OnContactClicked {
+        void c(Contact contact, int position);
+    }
 
     @NonNull
     @Override
@@ -22,8 +31,14 @@ public class ContactAdapterNew extends RecyclerView.Adapter<ContactAdapterNew.Co
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ContactViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ContactViewHolder holder, final int position) {
         holder.onBind(contacts.get(position));
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onItemClickedListener.c(contacts.get(position), position);
+            }
+        });
     }
 
     @Override
