@@ -10,7 +10,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+
+import cat.cattutorial.db.AppDatabase;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,6 +28,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        final AppDatabase db = AppDatabase.getInstance(this);
+        List<Contact> dbContacts = db.contactDao().getContacts();
+
+        adapter.submitList(dbContacts);
+
         recyclerView = findViewById(R.id.rv);
         recyclerView.setAdapter(adapter);
 
@@ -31,10 +40,9 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                contacts.add(new Contact("Mohamed" + new Random().nextFloat(), ""));
-                ArrayList<Contact> tempList = new ArrayList<>(contacts);
-                adapter.submitList(tempList);
-
+                db.contactDao().insertContact(new Contact("Mohamed" + new Random().nextFloat(), new Random().nextInt()+""));
+                List<Contact> dbContacts = db.contactDao().getContacts();
+                adapter.submitList(dbContacts);
             }
         });
 
