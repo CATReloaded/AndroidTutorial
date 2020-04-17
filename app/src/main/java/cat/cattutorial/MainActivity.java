@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Random;
 
 import cat.cattutorial.db.AppDatabase;
+import cat.cattutorial.repostory.AddContactRepository;
 import cat.cattutorial.repostory.ContactRepository;
 
 
@@ -23,6 +24,12 @@ public class MainActivity extends AppCompatActivity {
     ContactAdapter adapter = new ContactAdapter();
     ArrayList<Contact> contacts = new ArrayList<>();
     FloatingActionButton fab;
+    ContactRepository.ContactCallback callback = new ContactRepository.ContactCallback() {
+        @Override
+        public void getContactList(List<Contact> contacts) {
+            adapter.submitList(contacts);
+        }
+    };
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -30,12 +37,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         final AppDatabase db = AppDatabase.getInstance(this);
-        ContactRepository repo = new ContactRepository(db, new ContactRepository.ContactCallback() {
-            @Override
-            public void getContactList(List<Contact> contacts) {
-                adapter.submitList(contacts);
-            }
-        });
+
+        ContactRepository repo = new ContactRepository(db, callback);
 
 
         repo.execute();
@@ -48,9 +51,8 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                db.contactDao().insertContact(new Contact("Mohamed" + new Random().nextFloat(), new Random().nextInt() + ""));
-                List<Contact> dbContacts = db.contactDao().getContacts();
-                adapter.submitList(dbContacts);
+                AddContactRepository addContact = new AddContactRepository(db, callback);
+                addContact.execute(new Contact("MMMM", new Random().nextInt() + ""));
             }
         });
 
