@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Random;
 
 import cat.cattutorial.db.AppDatabase;
+import cat.cattutorial.repostory.ContactRepository;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -29,23 +30,41 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         final AppDatabase db = AppDatabase.getInstance(this);
-        List<Contact> dbContacts = db.contactDao().getContacts();
+        ContactRepository repo = new ContactRepository(db, new ContactRepository.ContactCallback() {
+            @Override
+            public void getContactList(List<Contact> contacts) {
+                adapter.submitList(contacts);
+            }
+        });
 
-        adapter.submitList(dbContacts);
 
+        repo.execute();
         recyclerView = findViewById(R.id.rv);
+
+        // NULL POINTER EXCEPTION
         recyclerView.setAdapter(adapter);
 
         fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                db.contactDao().insertContact(new Contact("Mohamed" + new Random().nextFloat(), new Random().nextInt()+""));
+                db.contactDao().insertContact(new Contact("Mohamed" + new Random().nextFloat(), new Random().nextInt() + ""));
                 List<Contact> dbContacts = db.contactDao().getContacts();
                 adapter.submitList(dbContacts);
             }
         });
 
     }
+
+
+    // Pre Background
+    // Load in background
+    // Post Background
+
+
+    // AsyncTask
+    // AsyncTaskLoader
+    // ViewModel + LiveData + AsyncTask
+
 
 }
