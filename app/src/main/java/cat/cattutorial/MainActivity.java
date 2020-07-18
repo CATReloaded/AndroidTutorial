@@ -57,16 +57,4 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
-
-    // Pre Background
-    // Load in background
-    // Post Background
-
-
-    // AsyncTask
-    // AsyncTaskLoader
-    // ViewModel + LiveData + AsyncTask
-
-
 }
